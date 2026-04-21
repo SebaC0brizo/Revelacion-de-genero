@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Sorpresa de Revelación!</title>
+    <style>
+        /* --- ESTILOS BASE Y FONDO DE TRANSICIÓN --- */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #ffd1dc 0%, #e0c3fc 50%, #8ec5fc 100%);
+            transition: background 0.5s ease; 
+            overflow: hidden; 
+        }
+
+        /* --- BOTÓN REGALO (TEMBLOR) --- */
+        #boton-regalo {
+            font-size: 100px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            animation: temblor 0.5s infinite; 
+            z-index: 100; 
+        }
+        #pantalla-regalo p {
+            color: #333;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        @keyframes temblor {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(15deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* --- CUADRO DEL MENSAJE DE REVELACIÓN (TARJETA FLOTANTE) --- */
+        #pantalla-mensaje {
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* --- ESTILOS DE TEXTO E IMÁGENES --- */
+        #pantalla-mensaje h2 {
+            color: #7AAACE;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        #pantalla-mensaje p.mensaje-principal {
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .galeria-fotos {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap; 
+        }
+        figure {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 250px; 
+            width: 100%;
+        }
+        figure img {
+            width: 100%;
+            aspect-ratio: 2 / 3; 
+            object-fit: cover; 
+            border-radius: 15px;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+        }
+        figcaption {
+            font-size: 0.95rem;
+            color: #444;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        /* --- EFECTOS DE CELEBRACIÓN (FONDOS ANIMADOS) --- */
+        #celebracion-fondo {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; 
+            overflow: hidden;
+            pointer-events: none; 
+        }
+
+        /* --- 🎈 EFECTO SERPENTINAS CAYENDO --- */
+        .serpentina {
+            position: absolute;
+            width: 8px;
+            height: 25px;
+            opacity: 0.8;
+            border-radius: 3px;
+            top: -50px;
+            animation: caer 4s linear infinite;
+        }
+
+        .serp-c1 { background: #FFD700; } 
+        .serp-c2 { background: #FF69B4; } 
+        .serp-c3 { background: #00BFFF; } 
+        .serp-c4 { background: #32CD32; } 
+        .serp-c5 { background: #FF4500; } 
+
+        @keyframes caer {
+            0% { top: -50px; transform: translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { top: 110%; transform: translateX(calc(150px * var(--s))) rotate(calc(720deg * var(--i))); opacity: 0; }
+        }
+
+        /* --- 🎆 EFECTO FUEGOS ARTIFICIALES (EXPLOSIONES) --- */
+        .fuego-artificial {
+            position: absolute;
+            left: calc(100% * var(--x));
+            top: calc(100% * var(--y));
+            animation-delay: var(--d);
+            width: 15px;
+        }
+
+        .fuego-artificial::before,
+        .fuego-artificial::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            opacity: 1;
+        }
+
+        .fuego-w { background: white; box-shadow: 0 0 15px 5px white; }
+        .fuego-w::before { box-shadow: -40px -40px 8px white, 40px -40px 8px white, -40px 40px 8px white, 40px 40px 8px white; }
+        .fuego-w::after { box-shadow: -60px 0px 8px white, 60px 0px 8px white, 0px 60px 8px white, 0px -60px 8px white; }
+
+        .fuego-b { background: #add8e6; box-shadow: 0 0 15px 5px #add8e6; }
+        .fuego-b::before { box-shadow: -40px -40px 8px #add8e6, 40px -40px 8px #add8e6, -40px 40px 8px #add8e6, 40px 40px 8px #add8e6; }
+        .fuego-b::after { box-shadow: -60px 0px 8px #add8e6, 60px 0px 8px #add8e6, 0px 60px 8px #add8e6, 0px -60px 8px #add8e6; }
+
+        .fuego-db { background: #0000ff; box-shadow: 0 0 15px 5px #0000ff; }
+        .fuego-db::before { box-shadow: -40px -40px 8px #0000ff, 40px -40px 8px #0000ff, -40px 40px 8px #0000ff, 40px 40px 8px #0000ff; }
+        .fuego-db::after { box-shadow: -60px 0px 8px #0000ff, 60px 0px 8px #0000ff, 0px 60px 8px #0000ff, 0px -60px 8px #0000ff; }
+
+        @keyframes estallido {
+            0% { transform: scale(0); opacity: 0; }
+            5% { transform: scale(1); opacity: 1; }
+            15% { transform: scale(1.5); opacity: 0.8; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="sonido-tambores" src="scratchonix-drum-roll-for-victory-366448.mp3"></audio>
+    <audio id="sonido-fuegos" src="dragon-studio-fireworks-07-419025.mp3"></audio>
+
+    <div id="pantalla-regalo">
+        <button id="boton-regalo" onclick="abrirRegalo()">🎁</button>
+        <p>Haz clic en el regalo para descubrir la sorpresa</p>
+    </div>
+
+    <div id="celebracion-fondo">
+        <div class="fuego-artificial fuego-w" style="--x:0.05; --y:0.2; --d:0s;"></div>
+        <div class="fuego-artificial fuego-b" style="--x:0.02; --y:0.5; --d:2s;"></div>
+        <div class="fuego-artificial fuego-db" style="--x:0.08; --y:0.8; --d:1s;"></div>
+        <div class="fuego-artificial fuego-w" style="--x:0.95; --y:0.3; --d:3s;"></div>
+        <div class="fuego-artificial fuego-b" style="--x:0.98; --y:0.6; --d:1.5s;"></div>
+        <div class="fuego-artificial fuego-db" style="--x:0.92; --y:0.85; --d:4s;"></div>
+        <div class="fuego-artificial fuego-b" style="--x:0.3; --y:0.05; --d:0.5s;"></div>
+        <div class="fuego-artificial fuego-db" style="--x:0.7; --y:0.02; --d:2.5s;"></div>
+        <div class="fuego-artificial fuego-w" style="--x:0.4; --y:0.95; --d:1s;"></div>
+        <div class="fuego-artificial fuego-b" style="--x:0.6; --y:0.98; --d:3.5s;"></div>
+        
+        <div class="serpentina serp-c1" style="--x:0.05; --d:0.5s; --i:1; --s:-0.5;"></div>
+        <div class="serpentina serp-c2" style="--x:0.15; --d:1.2s; --i:2; --s:0.8;"></div>
+        <div class="serpentina serp-c3" style="--x:0.25; --d:0.1s; --i:1.5; --s:-0.2;"></div>
+        <div class="serpentina serp-c4" style="--x:0.35; --d:2.5s; --i:3; --s:1.2;"></div>
+        <div class="serpentina serp-c5" style="--x:0.45; --d:0.8s; --i:1; --s:-1.0;"></div>
+        <div class="serpentina serp-c1" style="--x:0.55; --d:1.8s; --i:2.5; --s:0.5;"></div>
+        <div class="serpentina serp-c2" style="--x:0.65; --d:0.3s; --i:1; --s:-0.8;"></div>
+        <div class="serpentina serp-c3" style="--x:0.75; --d:2.1s; --i:3; --s:1.0;"></div>
+        <div class="serpentina serp-c4" style="--x:0.85; --d:1.0s; --i:1.5; --s:-0.3;"></div>
+        <div class="serpentina serp-c5" style="--x:0.95; --d:0.6s; --i:2; --s:0.7;"></div>
+        <div class="serpentina serp-c1" style="--x:0.10; --d:3.5s; --i:1; --s:0.4;"></div>
+        <div class="serpentina serp-c2" style="--x:0.20; --d:4.2s; --i:2; --s:-0.6;"></div>
+        <div class="serpentina serp-c3" style="--x:0.30; --d:3.1s; --i:1.5; --s:0.9;"></div>
+        <div class="serpentina serp-c4" style="--x:0.40; --d:5.5s; --i:3; --s:-1.1;"></div>
+        <div class="serpentina serp-c5" style="--x:0.50; --d:3.8s; --i:1; --s:0.3;"></div>
+        <div class="serpentina serp-c1" style="--x:0.60; --d:4.8s; --i:2.5; --s:-0.7;"></div>
+        <div class="serpentina serp-c2" style="--x:0.70; --d:3.3s; --i:1; --s:0.6;"></div>
+        <div class="serpentina serp-c3" style="--x:0.80; --d:5.1s; --i:3; --s:-0.9;"></div>
+        <div class="serpentina serp-c4" style="--x:0.90; --d:4.0s; --i:1.5; --s:0.5;"></div>
+        <div class="serpentina serp-c5" style="--x:0.98; --d:3.6s; --i:2; --s:-0.4;"></div>
+    </div>
+
+    <div id="pantalla-mensaje" style="display: none;">
+        <h2>¡Es un NIÑO! 💙</h2>
+        <p class="mensaje-principal">Queridos amigos y familia, ¡tenemos una noticia que llena nuestros corazones de alegría! Waleska Martínez y Sebastián Martínez vamos a ser papás... ¡Y estamos esperando un hermoso niño!</p>
+
+        <div class="galeria-fotos">
+            <figure>
+                <img src="foto_waleska_sebastian.jpg.jpeg" alt="Waleska y Sebastián Martínez">
+                <figcaption>¡Los futuros papás muy felices!</figcaption>
+            </figure>
+            <figure>
+                <img src="foto_ecografia.jpg.jpeg" alt="Ecografía de nuestro bebé">
+                <figcaption>Conociendo a nuestro pequeño.</figcaption>
+            </figure>
+            <figure>
+                <img src="foto_ecografia1.jpg.jpeg" alt="Confirmación de que es niño">
+                <figcaption>¡La prueba indiscutible de que es niño! 🚙</figcaption>
+            </figure>
+            <figure>
+                <img src="foto_ecografia2.jpg.jpeg" alt="Bebé tapándose la cara">
+                <figcaption>Tapándose la carita porque era temprano y tenía sueño. ¡Nos retrasó la consulta pero nos hizo reír muchísimo! 😴</figcaption>
+            </figure>
+        </div>
+    </div>
+
+    <script>
+        function abrirRegalo() {
+            // 1. Reproducimos el redoble de tambores inmediatamente
+            document.getElementById('sonido-tambores').play();
+
+            // Opcional: ocultamos el texto de abajo para dar más suspenso al regalo vibrando
+            document.querySelector('#pantalla-regalo p').style.display = 'none';
+
+            // 2. Usamos setTimeout para esperar 3 segundos (3000 milisegundos)
+            setTimeout(function() {
+                
+                // Ocultamos la pantalla del regalo
+                document.getElementById('pantalla-regalo').style.display = 'none';
+
+                // Mostramos el mensaje (tarjeta flotante)
+                document.getElementById('pantalla-mensaje').style.display = 'block';
+                
+                // Cambiamos el fondo al azul pastel (#7AAACE)
+                document.body.style.background = '#7AAACE';
+
+                // Activamos la capa de celebración detrás
+                document.getElementById('celebracion-fondo').style.display = 'block';
+                
+                // Permitimos scroll
+                document.body.style.overflow = 'auto'; 
+
+                // Reproducimos la explosión de fuegos artificiales
+                document.getElementById('sonido-fuegos').play();
+
+            }, 3000); 
+        }
+    </script>
+
+</body>
+</html>
